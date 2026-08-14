@@ -1,41 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
-  --foreground: #171717;
+  --background: #f5f0e8;
+  --foreground: #1c1917;
   --card: #ffffff;
-  --muted: #737373;
-  --border: #e5e5e5;
-  --primary: #0f766e;
-  --primary-hover: #0d9488;
-  --accent: #f0fdfa;
+  --muted: #78716c;
+  --border: #e7e0d5;
+  --primary: #e85a3c;
+  --primary-hover: #d44a2e;
+  --accent: #faf6f0;
   --danger: #b91c1c;
   --warning: #b45309;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --card: #171717;
-    --muted: #a3a3a3;
-    --border: #262626;
-    --primary: #2dd4bf;
-    --primary-hover: #5eead4;
-    --accent: #134e4a;
-    --danger: #f87171;
-    --warning: #fbbf24;
-  }
+  --serif: "Libre Baskerville", "Georgia", "Times New Roman", serif;
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--sans);
   min-height: 100vh;
 }
 
 * {
   box-sizing: border-box;
+}
+
+.font-serif {
+  font-family: var(--serif);
 }
