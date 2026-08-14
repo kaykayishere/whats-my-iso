@@ -11,12 +11,12 @@ function CodeBadge({
 }) {
   if (!value) return null;
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs font-medium text-[var(--muted)] uppercase tracking-wide w-20 shrink-0">
+    <div className="flex items-center gap-3">
+      <span className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-wider w-24 shrink-0">
         {label}
       </span>
       <code
-        className="px-2.5 py-1 rounded-md bg-[var(--accent)] text-[var(--primary)] text-sm font-mono cursor-pointer hover:opacity-80 transition"
+        className="px-2.5 py-1 rounded-md bg-[var(--accent)] text-[var(--foreground)] text-sm font-mono cursor-pointer hover:bg-[var(--border)] transition border border-[var(--border)]"
         onClick={() => navigator.clipboard?.writeText(value)}
         title="Click to copy"
       >
@@ -32,41 +32,41 @@ export default function ResultCard({ entry }: { entry: SearchResult }) {
 
   return (
     <article
-      className={`rounded-2xl border bg-[var(--card)] p-5 shadow-sm transition hover:shadow-md ${
-        isDeprecated
-          ? "border-[var(--danger)]/40 opacity-90"
-          : "border-[var(--border)]"
+      className={`rounded-xl border bg-white p-6 shadow-sm transition hover:shadow-md ${
+        isDeprecated ? "border-red-200" : "border-[var(--border)]"
       }`}
     >
-      <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
         <div>
-          <h2 className="text-xl font-semibold text-[var(--foreground)]">
+          <h2 className="font-serif text-2xl text-[var(--foreground)]">
             {entry.name || "Unknown"}
           </h2>
           {entry.nativeName && entry.nativeName !== entry.name && (
-            <p className="text-[var(--muted)] mt-0.5">{entry.nativeName}</p>
+            <p className="text-[var(--muted)] mt-1 text-base">
+              {entry.nativeName}
+            </p>
           )}
         </div>
         <div className="flex flex-wrap gap-2">
           {isDeprecated && (
-            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300">
+            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-red-50 text-red-800 border border-red-100">
               Deprecated
             </span>
           )}
           {entry.codeType && (
-            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-[var(--accent)] text-[var(--muted)] border border-[var(--border)]">
               {entry.codeType}
             </span>
           )}
           {isMacrolanguage && (
-            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-amber-50 text-amber-800 border border-amber-100">
               Macrolanguage
             </span>
           )}
         </div>
       </div>
 
-      <div className="space-y-2 mb-4">
+      <div className="space-y-2.5 mb-5">
         <CodeBadge label="ISO 639-3" value={entry.iso6393} />
         <CodeBadge label="ISO 639-1" value={entry.iso6391} />
         <CodeBadge
@@ -87,20 +87,22 @@ export default function ResultCard({ entry }: { entry: SearchResult }) {
       </div>
 
       {entry.altNames && (
-        <div className="mb-3">
-          <p className="text-xs font-medium text-[var(--muted)] uppercase tracking-wide mb-1">
+        <div className="mb-4">
+          <p className="text-[11px] font-medium text-[var(--muted)] uppercase tracking-wider mb-1.5">
             Alternate names
           </p>
-          <p className="text-sm text-[var(--foreground)]">{entry.altNames}</p>
+          <p className="text-sm text-[var(--foreground)] leading-relaxed">
+            {entry.altNames}
+          </p>
         </div>
       )}
 
       {(entry.macrolanguageOf || entry.macrolanguageMembers) && (
-        <div className="mb-3 text-sm">
+        <div className="mb-4 text-sm">
           {entry.macrolanguageOf && (
             <p>
               <span className="text-[var(--muted)]">Macrolanguage of: </span>
-              <code className="font-mono text-[var(--primary)]">
+              <code className="font-mono text-[var(--foreground)]">
                 {entry.macrolanguageOf}
               </code>
             </p>
@@ -117,7 +119,7 @@ export default function ResultCard({ entry }: { entry: SearchResult }) {
       )}
 
       {isDeprecated && (
-        <div className="mt-3 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 text-sm">
+        <div className="mt-4 p-4 rounded-lg bg-red-50 border border-red-100 text-sm">
           {entry.deprecatedReason && (
             <p>
               <strong>Reason:</strong> {entry.deprecatedReason}
@@ -133,7 +135,7 @@ export default function ResultCard({ entry }: { entry: SearchResult }) {
       )}
 
       {(entry.primaryCountry || entry.additionalCountries) && (
-        <p className="mt-3 text-xs text-[var(--muted)]">
+        <p className="mt-4 text-xs text-[var(--muted)]">
           {[entry.primaryCountry, entry.additionalCountries]
             .filter(Boolean)
             .join("; ")}
