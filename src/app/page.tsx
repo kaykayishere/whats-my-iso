@@ -35,13 +35,38 @@ export default function HomePage() {
     }
   }, []);
 
+  // When user clicks a suggestion, show that entry prominently + related matches
+  const handleSelectSuggestion = useCallback(
+    async (entry: SearchResult) => {
+      const label = entry.name || entry.iso6393 || entry.bcp47 || "";
+      setQuery(label);
+      setLoading(true);
+      setError(null);
+      setHasSearched(true);
+      try {
+        // Prefer the selected entry first, then similar results
+        const data = await searchLanguages(label, 40);
+        const key = entry.iso6393 || entry.bcp47 || entry.name || "";
+        const others = data.filter(
+          (d) => (d.iso6393 || d.bcp47 || d.name) !== key
+        );
+        setResults([entry, ...others]);
+      } catch (err) {
+        console.error(err);
+        setResults([entry]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
   const ambiguity =
     results.length > 1 &&
     results.filter((r) => r.deprecated !== "Yes").length > 1;
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header — matches IDLI style */}
       <header className="bg-[var(--background)]">
         <div className="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between">
           <div>
@@ -63,7 +88,6 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Main */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-12">
         <div className="mb-12">
           <h2 className="font-serif text-3xl sm:text-4xl text-[var(--foreground)] mb-3">
@@ -75,7 +99,11 @@ export default function HomePage() {
           </p>
         </div>
 
-        <SearchBar onSearch={handleSearch} loading={loading} />
+        <SearchBar
+          onSearch={handleSearch}
+          onSelectSuggestion={handleSelectSuggestion}
+          loading={loading}
+        />
 
         <div className="mt-12">
           {error && (
@@ -157,7 +185,6 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-[var(--border)] py-8 text-center text-xs text-[var(--muted)]">
         <p>
           Data from SILICON ISO Crosswalk · Built as a public tool for the IDLI
