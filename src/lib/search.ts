@@ -30,20 +30,20 @@ function buildFuse(data: LanguageEntry[]) {
     includeScore: true,
     ignoreLocation: true,
     minMatchCharLength: 1,
-    useExtendedSearch: false,
   });
 }
 
-export async function searchLanguages(query: string, limit = 30): Promise<SearchResult[]> {
+/** Full search (for final results) */
+export async function searchLanguages(
+  query: string,
+  limit = 30
+): Promise<SearchResult[]> {
   const q = query.trim();
   if (!q) return [];
 
   const data = await loadData();
-  if (!fuseInstance) {
-    fuseInstance = buildFuse(data);
-  }
+  if (!fuseInstance) fuseInstance = buildFuse(data);
 
-  // Exact code match first (case-insensitive)
   const lower = q.toLowerCase();
   const exactMatches: SearchResult[] = [];
   const seen = new Set<string>();
@@ -70,7 +70,6 @@ export async function searchLanguages(query: string, limit = 30): Promise<Search
     }
   }
 
-  // Fuzzy search
   const fuzzy = fuseInstance.search(q, { limit: limit + exactMatches.length });
   const fuzzyResults: SearchResult[] = [];
 
@@ -82,7 +81,6 @@ export async function searchLanguages(query: string, limit = 30): Promise<Search
     }
   }
 
-  // Prefer non-deprecated, then exact, then by score
   const combined = [...exactMatches, ...fuzzyResults];
   combined.sort((a, b) => {
     const aDep = a.deprecated === "Yes" ? 1 : 0;
@@ -92,4 +90,12 @@ export async function searchLanguages(query: string, limit = 30): Promise<Search
   });
 
   return combined.slice(0, limit);
+}
+
+/** Lightweight suggestions for typeahead */
+export async function suggestLanguages(
+  query: string,
+  limit = 8
+): Promise<SearchResult[]> {
+  return searchLanguages(query, limit);
 }
